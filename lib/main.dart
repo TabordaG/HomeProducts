@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     padding: EdgeInsets.only(top: 20, right: 10, left: 10),
                     child: StaggeredGridView.countBuilder(                      
-                      controller: scrollController, //SliverStaggeredGridDelegateWithFixedCrossAxisCount
+                      controller: scrollController, //SliverStaggeredGridDelegateWithFixedCrossAxisCount usar com CustomScrollView
                       crossAxisCount: 2,
                       itemCount: categories.length,
                       crossAxisSpacing: 20,
