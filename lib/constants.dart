@@ -9,7 +9,7 @@ const kGreenColor = Color(0xFF49CC96);
 // My Text Styles
 const kHeadingextStyle = TextStyle(
   fontSize: 22,
-  color: Color.fromRGBO(76, 150, 203, 1),//kTextColor,
+  color: Color.fromRGBO(23, 69, 128, 1),//kTextColor,
   fontWeight: FontWeight.bold,
 );
 const kSubheadingextStyle = TextStyle(
