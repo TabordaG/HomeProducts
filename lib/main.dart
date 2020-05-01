@@ -3,6 +3,9 @@ import 'package:course_app/model/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+PanelController _pc = new PanelController();
 
 void main() => runApp(MyApp());
 
@@ -27,106 +30,104 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    double initialSize = 1 - (275 / MediaQuery.of(context).size.height);
+    double initialSize = 1 - (265 / MediaQuery.of(context).size.height);
     print(initialSize);
     return SafeArea(
       child: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            TopPageHome(),
-            DraggableScroll(initialSize: initialSize),
-          ],
+        body: SlidingUpPanel(
+          controller: _pc,
+          renderPanelSheet: false,
+          // backdropEnabled: true,
+          minHeight: MediaQuery.of(context).size.height * initialSize,
+          maxHeight: MediaQuery.of(context).size.height + 50,
+          panelBuilder: (ScrollController sc) => _gridView(controller: sc),
+          // collapsed: _floatingCollapsed(),
+          header: Container(
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(76, 150, 203, .8),
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+            ),
+            height: 40,
+            width: MediaQuery.of(context).size.width - 20,
+            margin: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+            child: Center(
+              child: Text(
+                "Produtos",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          body: Center(
+            child: TopPageHome(),
+          ),
         ),
       ),
     );
   }
 }
 
-class DraggableScroll extends StatelessWidget {
-  const DraggableScroll({
-    Key key,
-    @required this.initialSize,
-  }) : super(key: key);
-
-  final double initialSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(40.0),
-          topLeft: Radius.circular(40.0),
-        ),
+Widget _gridView ({ScrollController controller}) {
+  return Container(
+    decoration: BoxDecoration(
+      // borderRadius: BorderRadius.all(Radius.circular(24.0)),
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.center, 
+        colors: [const Color.fromRGBO(76, 150, 203, .6), Colors.white.withAlpha(50)], 
       ),
-      child: DraggableScrollableSheet(
-        initialChildSize: initialSize,
-        minChildSize: initialSize,
-        maxChildSize: 0.9,
-        builder: (context, scrollController) {
+      // boxShadow: [
+      //   BoxShadow(
+      //     blurRadius: 20.0,
+      //     color: Colors.grey[50],
+      //   ),
+      // ]
+    ),
+    margin: const EdgeInsets.only(left: 10.0, top: 60.0, right: 10.0, bottom: 30),
+    child: SizedBox.expand(
+      child: StaggeredGridView.countBuilder(
+        padding: EdgeInsets.only(top: 20, right: 10, left: 10),
+        controller: controller, //SliverStaggeredGridDelegateWithFixedCrossAxisCount usar com CustomScrollView
+        crossAxisCount: 2,
+        shrinkWrap: false,
+        itemCount: categories.length,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        itemBuilder: (context, index) {
           return Container(
+            padding: EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 20),
+            height: 180, //index.isEven ? 200 : 240,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(40.0),
-                topLeft: Radius.circular(40.0),
+              borderRadius: BorderRadius.circular(16),
+              image: DecorationImage(
+                image: AssetImage(categories[index].image),
+                fit: BoxFit.fill,
               ),
-              color: Color.fromRGBO(39, 113, 177, 1),
             ),
-            padding: EdgeInsets.only(top: 20, right: 10, left: 10),
-            child: ListView(
-              controller: scrollController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(child: Text('Teste ListView')),
-                SizedBox(height: 20,),
-                Container(
-                  width: double.infinity,
-                  // height: 200,
-                  height: initialSize * MediaQuery.of(context).size.height,
-                  child: StaggeredGridView.countBuilder(                      
-                    // controller: scrollController, //SliverStaggeredGridDelegateWithFixedCrossAxisCount usar com CustomScrollView
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    itemCount: categories.length,
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.all(20),
-                        height: index.isEven ? 200 : 240,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          image: DecorationImage(
-                            image: AssetImage(categories[index].image),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              categories[index].name,
-                              style: kTitleTextStyle,
-                            ),
-                            Text(
-                              '${categories[index].numOfCourses} Courses',
-                              style: TextStyle(
-                                color: kTextColor.withOpacity(.5),
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                  ),
+                Text(
+                  categories[index].name,
+                  style: kTitleTextStyle,
                 ),
+                Text(
+                  '${categories[index].numOfCourses}',
+                  style: TextStyle(
+                    color: kTextColor.withOpacity(.8),
+                  ),
+                )
               ],
             ),
           );
-        }
+        },
+        staggeredTileBuilder: (index) => StaggeredTile.fit(1),
       ),
-    );
-  }
+    ),
+  );
 }
 
 class TopPageHome extends StatelessWidget {
@@ -144,14 +145,16 @@ class TopPageHome extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              SvgPicture.asset("assets/icons/menu.svg", color: Color.fromRGBO(76, 150, 203, 1),),
+              SvgPicture.asset(
+                "assets/icons/menu.svg",
+                color: Color.fromRGBO(76, 150, 203, 1).withAlpha(255),
+              ),
               Image.asset("assets/images/user.png"),
             ],
           ),
           SizedBox(height: 20),
-          Text("Hey Gabriel,", style: kHeadingextStyle),
-          Text("Find a product you want to taste",
-              style: kSubheadingextStyle),
+          Text("Olá Gabriel,", style: kHeadingextStyle),
+          Text("Encontre o produto perfeito para sua mesa", style: kSubheadingextStyle),
           Container(
             margin: EdgeInsets.symmetric(vertical: 15),
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -163,10 +166,13 @@ class TopPageHome extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                SvgPicture.asset("assets/icons/search.svg", color: Color.fromRGBO(76, 150, 203, 1),),
+                SvgPicture.asset(
+                  "assets/icons/search.svg",
+                  color: Color.fromRGBO(76, 150, 203, 1),
+                ),
                 SizedBox(width: 10),
                 Text(
-                  "Search for anything",
+                  "Procurar",
                   style: TextStyle(
                     fontSize: 18,
                     color: Color(0xFFA0A5BD),
@@ -178,66 +184,16 @@ class TopPageHome extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("Category", style: kTitleTextStyle),
+              Text("Categoria", style: kTitleTextStyle),
               Text(
-                "See All",
-                style: kSubtitleTextSyule.copyWith(color: Color.fromRGBO(76, 150, 203, 1)),
+                "Ver Todos",
+                style: kSubtitleTextSyule.copyWith(
+                    color: Color.fromRGBO(76, 150, 203, 1)),
               ),
             ],
           ),
           SizedBox(height: 15),
         ],
-      ),
-    );
-  }
-}
-
-class DragabbleScrollableSheetDemo extends StatefulWidget {
-  @override
-  _DragabbleScrollableSheetDemoState createState() =>
-      _DragabbleScrollableSheetDemoState();
-}
-
-class _DragabbleScrollableSheetDemoState
-    extends State<DragabbleScrollableSheetDemo> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      darkTheme: ThemeData.dark(),
-      theme: ThemeData(brightness: Brightness.dark),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('DraggableScrollableSheet'),
-        ),
-        body: Container(
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.3,
-            minChildSize: 0.1,
-            maxChildSize: 0.8,
-            builder: (BuildContext context, myscrollController) {
-              return Container(
-                color: Colors.tealAccent[200],
-                child: ListView.builder(
-                  controller: myscrollController,
-                  itemCount: 25,
-                  itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
-                        title: Text(
-                      'Dish $index',
-                      style: TextStyle(color: Colors.black54),
-                    ));
-                  },
-                ),
-              );
-            },
-          ),
-        ),
       ),
     );
   }

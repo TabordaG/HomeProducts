@@ -1,7 +1,7 @@
 
 class Category {
   final String name;
-  final int numOfCourses;
+  final String numOfCourses;
   final String image;
 
   Category(this.name, this.numOfCourses, this.image);
@@ -12,20 +12,22 @@ List<Category> categories = categoriesData
     .toList();
 
 var categoriesData = [
-  {"name": "Marketing", 'courses': 17, 'image': "assets/images/marketing.png"},
-  {"name": "UX Design", 'courses': 25, 'image': "assets/images/ux_design.png"},
+  {"name": "Alface", 'courses': "Gabriel", 'image': "assets/images/alface.png"},
+  {"name": "Tomate", 'courses': "Kevin", 'image': "assets/images/tomate.png"},
   {
-    "name": "Photography",
-    'courses': 13,
-    'image': "assets/images/photography.png"
+    "name": "Mamão",
+    'courses': "Gustavo",
+    'image': "assets/images/mamao.png"
   },
-  {"name": "Business", 'courses': 17, 'image': "assets/images/business.png"},
-  {"name": "Marketing", 'courses': 17, 'image': "assets/images/marketing.png"},
-  {"name": "UX Design", 'courses': 25, 'image': "assets/images/ux_design.png"},
+  {"name": "Cenoura", 'courses': "Elmo", 'image': "assets/images/cenoura.png"},
+  {"name": "Abacate", 'courses': "Gustavo", 'image': "assets/images/abacate.png"},
+  {"name": "Maça", 'courses': "Gabriel", 'image': "assets/images/maca.png"},
   {
-    "name": "Photography",
-    'courses': 13,
-    'image': "assets/images/photography.png"
+    "name": "Mamão",
+    'courses': "Kevin",
+    'image': "assets/images/mamao.png"
   },
-  {"name": "Business", 'courses': 17, 'image': "assets/images/business.png"},
+  {"name": "Paçoca", 'courses': "Elmo", 'image': "assets/images/pacoca.png"},
+  {"name": "Alface", 'courses': "Gabriel", 'image': "assets/images/alface.png"},
+  {"name": "Tomate", 'courses': "Kevin", 'image': "assets/images/tomate.png"},
 ];

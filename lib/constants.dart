@@ -13,7 +13,7 @@ const kHeadingextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 const kSubheadingextStyle = TextStyle(
-  fontSize: 18,
+  fontSize: 16,
   color: Color(0xFF61688B),
   height: 2,
 );
