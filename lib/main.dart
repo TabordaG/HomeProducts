@@ -5,7 +5,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-PanelController _pc = new PanelController();
 TextEditingController _search = TextEditingController();
 TextEditingController _filtro = TextEditingController(text: 'Ver Todos');
 
@@ -35,6 +34,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  PanelController _pc = new PanelController();
+
   @override
   void initState() {
     _dropDownMenuItems = getDropDownMenuItems();
@@ -46,26 +47,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double initialSize = 1 - (265 / MediaQuery.of(context).size.height);
     print(initialSize);
-    print(MediaQuery.of(context).size.height);
+    print(MediaQuery.of(context).size.height * initialSize);
     return SafeArea(
       child: Scaffold(
         body: SlidingUpPanel(
           controller: _pc,
           renderPanelSheet: false,
-          minHeight: MediaQuery.of(context).size.height * initialSize,
+          minHeight: 375, //MediaQuery.of(context).size.height * initialSize,
           maxHeight: MediaQuery.of(context).size.height,
-          panelBuilder: (ScrollController sc) => _gridView(controller: sc),
+          panelBuilder: (_pc) => _gridView(controller: _pc),
           header: Container(
             decoration: BoxDecoration(
               color: Color.fromRGBO(59, 112, 162, 1),
               borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
             ),
             height: 40,
-            width: MediaQuery.of(context).size.width - 20,
-            margin: const EdgeInsets.fromLTRB(10.0, 20.0, 10.0, 0.0),
+            width: MediaQuery.of(context).size.width - 10,
+            margin: const EdgeInsets.fromLTRB(5.0, 20.0, 5.0, 0.0),
             child: Center(
               child: Text(
-                "Produtos",
+                "...",
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.white,
@@ -75,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           body: Center(
-            child: TopPageHome(),
+            child: TopPageHome(_pc),
           ),
         ),
       ),
@@ -86,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
 Widget _gridView ({ScrollController controller}) {
   return Container(
     color: Color.fromRGBO(193, 218, 242, 1),
-    margin: const EdgeInsets.only(left: 10.0, top: 60.0, right: 10.0, bottom: 30),
+    margin: const EdgeInsets.only(left: 5.0, top: 60.0, right: 5.0, bottom: 30),
     child: SizedBox.expand(
       child: StaggeredGridView.countBuilder(
         padding: EdgeInsets.only(top: 20, right: 10, left: 10),
@@ -131,9 +132,9 @@ Widget _gridView ({ScrollController controller}) {
 }
 
 class TopPageHome extends StatefulWidget {
-  const TopPageHome({
-    Key key,
-  }) : super(key: key);
+  final PanelController controller;
+
+  TopPageHome(this.controller);  
 
   @override
   _TopPageHomeState createState() => _TopPageHomeState();
@@ -179,7 +180,7 @@ class _TopPageHomeState extends State<TopPageHome> {
                   onTap: () {
                     setState(() {
                       print(_search.text);
-                      _pc.animatePanelToPosition(1, duration: Duration(milliseconds: 1500), curve: Curves.fastOutSlowIn);
+                      widget.controller.animatePanelToPosition(1, duration: Duration(milliseconds: 1500), curve: Curves.fastOutSlowIn);
                     });
                   },
                 ),
